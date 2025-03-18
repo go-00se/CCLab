@@ -1,76 +1,129 @@
-let rects = []; //rectangles
-let numRect = 35; //number of rects
-let noiseAmp = 50;
-let noiseFreq = 0.14;
-
-//controls the random movement of the "destination" of the group of rects
 let cX1 = 200;
 let cY1 = 200;
 let cX2 = 9;
 let cY2 = 5;
 let cX3 = 7;
 let cY3 = 8;
+
 let spdR = 0.1;
-let spdX1 = 2.5;
-let spdY1 = 6;
+let spdX1 = 2;
+let spdY1 = 7;
 let leftEdge = 50;
-let rightEdge = 750;
+let rightEdge = 350;
 let upEdge = 0;
-let downEdge = 490;
+let downEdge = 400;
+
+let w, h;
+let posX = 0;
+let posY = 0;
+let slideX, slideY;
+
+let vx = 0;
+let vy = 0;
+let k = 0.8;
+let eas = 0.05;
+
+let dense = 3;
+let size = 3;
+
+let count = 0;
+let cRad = 30;
+let squareSize = 30;
+
+let alp = 0;
+
+let lastTextUpdate = 0;
+
+// 存储方块
+let square0 = { active: false, x: 0, y: 0, speedX: 0, speedY: 0 };
+let square1 = { active: false, x: 0, y: 0, speedX: 0, speedY: 0 };
+let square2 = { active: false, x: 0, y: 0, speedX: 0, speedY: 0 };
+let square3 = { active: false, x: 0, y: 0, speedX: 0, speedY: 0 };
+let square4 = { active: false, x: 0, y: 0, speedX: 0, speedY: 0 };
 
 function setup() {
-    let canvas = createCanvas(800, 500);
-    canvas.id("p5-canvas");
-    canvas.parent("p5-canvas-container");
-    noStroke();
-    frameRate(60);
-
-  //initalize rect array
-  for (let i = 0; i < numRect; i++) {
-    rects.push({
-      x: random(width),
-      y: random(height),
-      w: random(10, 30),
-      h: random(10, 30),
-      vx: 0,
-      vy: 0, //initial speed o rect
-      k: random(0.79, 0.85), //contol the speed, if k = 1; rect gradually stops at the destination
-      eas: random(0.009, 0.067), //the acceleration of the acceleration of the movement
-      noiseOffX: random(1000, 2000), //Xposition offset in noise function for every rect
-      noiseOffY: random(0, 1000),
-      r: random(255),
-      g: random(255),
-      b: random(255)
-    });
-  }
+  let canvas = createCanvas(800, 500);
+  canvas.id("p5-canvas");
+  canvas.parent("p5-canvas-container");
+  frameRate(30);
+  textStyle(BOLD);
 }
 
 function draw() {
-  
-  console.log(numRect)
-  background(0);
-  noStroke();
+  background(0, 80);
   rectMode(CENTER);
 
-  push();
-  fill("white")
-  textSize(10)
-  text('interact with: mouseleft, d and f', 0, 10);
-  pop();
-  
-  cX1 += spdX1;
-  cY1 += spdY1;
+  glitch(dense, size, 0, 120, 0);
+  glitch(dense, size + 2, 0, 255, 0);
 
-  cX2 =
-    cX1 + random(20, 30) * sin(frameCount * spdR * noise(0.0007 * frameCount));
-  cY2 =
-    cY1 +
-    random(20, 30) *
-      cos(frameCount * spdR * noise(0.00018 * frameCount + 1000));
-  cX3 =
-    cX2 + random(20, 30) * cos((cY2 / 100) * noise(0.00059 * frameCount + 200));
-  cY3 =
-    cY2 + random(20, 30) * cos((cX2 / 10) * noise(0.0037 * frameCount + 3500));
+  if (count <= 10) {
+    fill(10, 25); // 半透明黑色
+    // rect(0, 0, width, height);
+
+    // 每100毫秒更新一次文字（10 FPS）
+    if (millis() - lastTextUpdate > 100) {
+      drawText();
+      lastTextUpdate = millis();
+    }
+    // 更新上次文字更新的时间
+
+    if (mouseIsPressed === true) {
+      if (frameCount % 60 === 0) {
+        if (!square0.active) initSquare(square0);
+        else if (!square1.active) initSquare(square1);
+        else if (!square2.active) initSquare(square2);
+        else if (!square3.active) initSquare(square3);
+        else if (!square4.active) initSquare(square4);
+      }
+
+      updateSquare(square0);
+      updateSquare(square1);
+      updateSquare(square2);
+      updateSquare(square3);
+      updateSquare(square4);
+
+      push();
+      textSize(100);
+      textAlign(CENTER, CENTER);
+      text(count, width / 2, height / 2);
+      pop();
+
+      fill(0, 255, 0, 100);
+      noStroke();
+      circle(cX3, cY3, cRad * 2);
+    }
+  } else {
+    fill(0, 255, 0, alp + 5);
+    noStroke();
+
+    rectMode(CENTER);
+    rect(width / 2, height / 2, 800, 600);
+
+    alp = min(alp + 10, 255);
+  }
+}
+
+//             0(chaos level)      0
+function glitch(dense, size, cr, cg, cb) {
+  noStroke();
+
+  destX = mouseX;
+  destY = mouseY;
+  if (mouseIsPressed === true) {
+    cX1 = lerp(cX1, destX + 15, 0.3);
+    cY1 = lerp(cY1, destY, 0.4);
+    // line(cX3, cY3, mouseX, mouseY)
+  } else {
+    cX1 = cX1 + spdX1;
+    cY1 = cY1 + spdY1;
+  }
+
+  cX2 = cX1 + 20 * sin(frameCount * spdR * noise(0.0005 * frameCount));
+  cY2 = cY1 + 20 * cos(frameCount * spdR);
+  cX3 = cX2 + 30 * cos(cY2 / 100);
+  cY3 = cY2 + 30 * cos(cX2 / 10);
+
+  // console.log(noise(0.005 * frameCount));
 
   if (
     cX1 > rightEdge - 2.5 ||
@@ -80,7 +133,9 @@ function draw() {
     cX3 > rightEdge - 2.5 ||
     cX3 < leftEdge + 2.5
   ) {
+    // speed turns negative
     spdX1 = -spdX1;
+    // leftEdge = random(10, 80);
   }
   if (
     cY1 > downEdge - 2.5 ||
@@ -90,111 +145,152 @@ function draw() {
     cY3 > downEdge - 2.5 ||
     cY3 < upEdge + 2.5
   ) {
+    // speed turns negative
     spdY1 = -spdY1;
   }
 
-  if (mouseIsPressed) {
-    // let globalNoiseX = noise(0.0001 * frameCount) * noiseAmp * 2 - noiseAmp;
-    // let globalNoiseY = noise(0.0001 * frameCount + 1000) * noiseAmp * 2 - noiseAmp;
-    cX1 = lerp(cX1, mouseX, 0.09);
-    cY1 = lerp(cY1, mouseY + 8, 0.09);
+  //   fill("red");
+  //   circle(cX1, cY1, 5);
+  //   line(cX1, cY1,cX2, cY2);
+
+  //   fill(0);
+  //   circle(cX2, cY2, 5);
+  // line(cX2,cY2, cX3, cY3 );
+  noStroke();
+
+  cX2 = cX2 + spdR;
+
+  //    let ax = (destX - x) * eas;
+  //     let ay = (destY - y) * eas;
+
+  //     vx = vx * k + ax;
+  //     vy = vy * k + ay;
+
+  //     x += vx;
+  //     y += vy;
+
+  stroke(0, 255, 0);
+
+  for (let a = 0; a <= random(dense, dense + count * 4); a += 5) {
+    for (let i = 0; i <= random(5, 25); i += 10) {
+      posX = lerp(posX, cX3, 0.08);
+      posY = lerp(posY, cY3, 0.08);
+
+      px = random(posX - random(3, 10) - size, posX + random(3, 10) * 2 + size);
+
+      py = random(posY - random(3, 10) - size, posY + random(3, 10) * 2 + size);
+
+      //       x = random(100, 90);
+
+      //     y = random(100, 90);
+
+      w = random(i + size, i + 15 + size);
+
+      h = random(i + size, i + 15 + size);
+
+      fill(cr, cg, cb);
+      push();
+      textFont("Monospace", 20);
+      text("0", px, py, w, h);
+      text("1", px - 10, py + 10, w, h);
+      pop();
+    }
+  }
+}
+// function
+function initSquare(sq) {
+  const edge = floor(random(4));
+  sq.active = true;
+
+  if (edge === 0) {
+    // 左边缘
+    sq.x = -squareSize;
+    sq.y = random(height);
+    sq.speedX = random(1, 3);
+    sq.speedY = random(-1, 1);
+  } else if (edge === 1) {
+    // 右边缘
+    sq.x = width;
+    sq.y = random(height);
+    sq.speedX = random(-3, -1);
+    sq.speedY = random(-1, 1);
+  } else if (edge === 2) {
+    // 上边缘
+    sq.x = random(width);
+    sq.y = -squareSize;
+    sq.speedX = random(-1, 1);
+    sq.speedY = random(1, 3);
+  } else if (edge === 3) {
+    // 下边缘
+    sq.x = random(width);
+    sq.y = height;
+    sq.speedX = random(-2, 2);
+    sq.speedY = random(-4, -2);
+  }
+}
+
+function updateSquare(sq) {
+  if (!sq.active) return;
+
+  // 更新位置
+  sq.x += sq.speedX;
+  sq.y += sq.speedY;
+
+  // 绘制方块
+  fill(0, 255, 0);
+  if (random() < 0.6) {
+    text("0", sq.x, sq.y, squareSize, squareSize);
+  } else {
+    text("1", sq.x, sq.y, squareSize, squareSize);
   }
 
-  for (let r of rects) {
-    // let noiseValX = noise(0.0001 * frameCount + rects.noiseOffX, rects.noiseIntensity);
-    // let noiseValY = noise(0.0001 * frameCount + rects.noiseOffY, rects.noiseIntensity);
-    let noiseX = map(noise(r.noiseOffX), 0, 1, -noiseAmp, noiseAmp);
-    let noiseY = map(noise(r.noiseOffY), 0, 1, -noiseAmp, noiseAmp);
+  // 碰撞检测
+  const centerX = sq.x + squareSize / 2;
+  const centerY = sq.y + squareSize / 2;
+  if (dist(centerX, centerY, cX3, cY3) < cRad + squareSize / 2) {
+    sq.active = false;
+    count++;
+    size = count * 50;
+    dense = count * 50;
+    cRad = count * 50;
+  }
 
-    let destX = cX3 + noiseX;
-    let destY = cY3 + noiseY;
-
-    let ax = (destX - r.x) * r.eas;
-    let ay = (destY - r.y) * r.eas;
-
-    r.vx = r.vx * r.k + ax;
-    r.vy = r.vy * r.k + ay;
-
-    r.x += r.vx;
-    r.y += r.vy;
-
-    r.noiseOffX += noiseFreq;
-    r.noiseOffY += noiseFreq;
-    
-    r.r += 0.3
-    r.b += 0.3
-    r.g += 0.3
-    
-    let rc = noise(r.r) * 255
-    let gc = noise(r.g) * 255
-    let bc = noise(r.b) * 255
-    
-    if (numRect < 30){
-    fill(0, 0, bc);
-    } else if(numRect > 50){
-      
-      fill(rc,0,0);
-      
-    } else {
-      
-      fill(rc);
-    }
-      
-    rect(r.x, r.y, r.w, r.h);
+  // 边界检测
+  if (
+    sq.x < -squareSize * 2 ||
+    sq.x > width + squareSize * 2 ||
+    sq.y < -squareSize * 2 ||
+    sq.y > height + squareSize * 2
+  ) {
+    sq.active = false;
   }
 }
 
 function keyPressed() {
-
-  if (key == "f") {
-
-    if (numRect >= 10 && numRect <= 180) {
-      numRect += 20;
-      //add 10 new ones
-      for (let i = 0; i < 10; i++) {
-        rects.push({
-          x: random(width),
-          y: random(height),
-          w: random(10, 30),
-          h: random(10, 30),
-          vx: 0,
-          vy: 0,
-          k: random(0.79, 0.85),
-          eas: random(0.009, 0.067),
-          noiseOffX: random(1000, 2000),
-          noiseOffY: random(0, 1000),
-        });
-
-        for (let r of rects) {
-         r.k = random(0.8, 0.95);
-        r.eas = random(0.005, 0.02);
-        r.k = min(0.95, r.k - 0.05);
-        r.eas = max(r.eas, r.eas + 0.0099) // increase eas, prevent too high
-        }
-        noiseFreq = noiseFreq + 0.4;
-        noiseAmp = noiseAmp + 5;
-      }
-    } else {
-      numRect = 100;
-    }
-  }
-  if (key == "d") {
-    
-    if (numRect > 20 && numRect <= 200) {
-      numRect -= 20;
-      rects.splice(numRect);
-      for (let r of rects) {
-        r.k = random(0.8, 0.95);
-        r.eas = random(0.005, 0.02);
-        r.k = min(0.95, r.k + 0.05);
-        r.eas = max(r.eas, r.eas - 0.0099);
-      }
-      noiseFreq = noiseFreq - 0.4;
-      noiseAmp = noiseAmp - 5;
-    } else {
-      numRect = 20;
-    }
+  if (key === " ") {
+    count = 0;
+    // 重置所有方块状态
+    square0.active = square1.active = square2.active = square3.active = square4.active = false;
   }
 }
 
+function drawText() {
+  textSize(15);
+  noStroke();
+  push();
+  fill(20, 100, 20); // 文字
+  const noiseScale = 0.9 + 0.05 * count; // 控制噪声空间尺度
+  const timeScale = 0.05 + 0.02 * count; // 控制噪声变化速度
 
+  for (let i = 0; i < width; i += 20) {
+    for (let j = 0; j < height; j += 20) {
+      const n = noise(i * noiseScale, j * noiseScale, millis() * timeScale);
+
+      if (n > 0.75) {
+        const char = String.fromCharCode(0x30a0 + round(random(0, 96)));
+        text(char, i, j);
+      }
+    }
+  }
+  pop();
+}
