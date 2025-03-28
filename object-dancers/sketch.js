@@ -37,14 +37,17 @@ class YourNameDancer {
     this.x = startX;
     this.y = startY;
     this.head = ["😆", "💀", "🙃", "🫥", "😨", "💩","👽", "😇", "😋"];
-    this.headPosX = 0;
-    this.headPosY = -45;
-    this.bodyPosX = 0;
-    this.bodyPosY = 0;
+    this.headX = 0;
+    this.headY = -45;
+    this.bodyX = 0;
+    this.bodyY = 0;
+    this.handL = 0;
+    this,handR = 0;
     this.body = ["👕", "👚"];
     this.leg = ["👖"];
     this.foot = ["👟"];
-    this.hand = ["🤚"];
+    this.handL = ["🤚"];
+    this.handR = ["🤚"];
     // add properties for your dancer here:
     //..
     //..
@@ -54,7 +57,9 @@ class YourNameDancer {
     // update properties here to achieve
     // your dancer's desired moves and behaviour
 
-    // this.bodyPosX = 
+    this.bodyX = this.headX;
+    this.bodyY = this.headY + 45;
+    this
 
   }
   display() {
@@ -66,8 +71,9 @@ class YourNameDancer {
 
     // ******** //
     // ⬇️ draw your dancer from here ⬇️
-    this.drawHead();
     this.drawBody();
+    this.drawHead();
+    
 
 
 
@@ -102,17 +108,29 @@ class YourNameDancer {
     if (frameCount % 60 == 0) {
       this.head = shuffle(this.head);
     }
-    text(this.head[0], this.headPosX, this.headPosY);
+    text(this.head[0], this.headX, this.headY);
   }
   drawBody(){
     push();
-    translate(this.headPosX, this.headPosY + 45);
+    translate(this.bodyX, this.bodyY);
     textAlign(CENTER, CENTER);
     textSize(70);
     if (frameCount % 60 == 0) {
       this.body = shuffle(this.body);
     }
     text(this.body[0], 0, 0);
+    pop();
+  }
+  drawhandL(){
+    push();
+    translate(this.handL, this.handL);
+    textAlign(CENTER, BOTTOM);
+    textSize(70);
+    if (frameCount % 60 == 0) {
+      this.handL = shuffle(this.handL);
+    }
+    text(this.handL[0], 0, 0);
+    pop();
   }
 }
 
