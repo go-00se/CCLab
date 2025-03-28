@@ -19,6 +19,7 @@ function setup() {
 
   // ...except to adjust the dancer's name on the next line:
   dancer = new YourNameDancer(width / 2, height / 2);
+  
 }
 
 function draw() {
@@ -41,13 +42,19 @@ class YourNameDancer {
     this.headY = -65;
     this.bodyX = 0;
     this.bodyY = 0;
+    this.bodyAngle = 0;
+    this.bodySpeed = 0.05;
     this.handLX = 0;
     this.handLY = 0;
     this.handRX = 0;
     this.handRY = 0;
-    this.body = ["👕", "👚"];
-    this.leg = ["👖"];
-    this.foot = ["👟"];
+    this.feetLX = 0;
+    this.feetLY = 0;
+    this.feetRX = 0;
+    this.feetRY = 0;
+    this.body = ["👕"];
+    this.feetL = ["👟","👞"];
+    this.feetR = ["👟","👞"];
     this.handL = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
     this.handR = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
     // add properties for your dancer here:
@@ -59,12 +66,22 @@ class YourNameDancer {
     // update properties here to achieve
     // your dancer's desired moves and behaviour
 
-    this.bodyX = this.headX;
-    this.bodyY = this.headY + 55;
+    // this.bodyX = this.headX;
+    // this.bodyY = this.headY + 55;
+
+    
+    
+    this.bodyAngle = 30 * sin(frameCount * this.bodySpeed);
+    this.bodyX = this.headX + sin(radians(this.bodyAngle));
+    this.bodyY = this.headY + 55 * cos(radians(this.bodyAngle));
     this.handLX = this.bodyX - 60;
     this.handLY = this.bodyY + 30;
     this.handRX = this.bodyX + 60;
     this.handRY = this.bodyY + 30;
+    this.feetLX = this.bodyX - 20;
+    this.feetLY = this.bodyY + 110;
+    this.feetRX = this.bodyX + 20;
+    this.feetRY = this.bodyY + 110;
 
   }
   display() {
@@ -80,12 +97,8 @@ class YourNameDancer {
     this.drawHead();
     this.drawhandL();
     this.drawhandR();
-    
-
-
-
-
-
+    this.drawFeetL();
+    this.drawFeetR();
     // ⬆️ draw your dancer above ⬆️
     // ******** //
 
@@ -110,16 +123,20 @@ class YourNameDancer {
     stroke(0);
   }
   drawHead(){
+    push();
     textAlign(CENTER, CENTER);
-    textSize(50);
+    rotate(radians(this.bodyAngle*0.5));
+    textSize(40);
     if (frameCount % 60 == 0) {
       this.head = shuffle(this.head);
     }
     text(this.head[0], this.headX, this.headY);
+    pop();
   }
   drawBody(){
     push();
     translate(this.bodyX, this.bodyY);
+    rotate(radians(this.bodyAngle));
     textAlign(CENTER, CENTER);
     textSize(70);
     if (frameCount % 60 == 0) {
@@ -131,8 +148,8 @@ class YourNameDancer {
   drawhandL(){
     push();
     translate(this.handLX, this.handLY);
-    textAlign(CENTER, BOTTOM);
-    textSize(30);
+    textAlign(CENTER, CENTER);
+    textSize(20);
     rotate(-frameCount / 10 + 1000);
     if (frameCount % 60 == 0) {
       this.handL = shuffle(this.handL);
@@ -143,13 +160,35 @@ class YourNameDancer {
   drawhandR(){
     push();
     translate(this.handRX, this.handRY);
-    textAlign(CENTER, BOTTOM);
-    textSize(30);
+    textAlign(CENTER, CENTER);
+    textSize(20);
     rotate(frameCount / 10);
     if (frameCount % 60 == 0) {
       this.handR = shuffle(this.handR);
     }
     text(this.handR[0], 0, 0);
+    pop();
+  }
+  drawFeetL (){
+    push();
+    translate(this.feetLX, this.feetLY);
+    textAlign(CENTER, BOTTOM);
+    textSize(30);
+    if (frameCount % 10 == 0) {
+      this.feetL = shuffle(this.feetL);
+    }
+    text(this.feetL[0], 0, 0);  
+    pop();
+  }
+  drawFeetR (){
+    push();
+    translate(this.feetRX, this.feetRY);
+    textAlign(CENTER, BOTTOM);
+    textSize(30);
+    if (frameCount % 10 == 0) {
+      this.feetR = shuffle(this.feetR);
+    }
+    text(this.feetR[0], 0, 0);  
     pop();
   }
 }
