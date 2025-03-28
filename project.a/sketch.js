@@ -190,7 +190,7 @@ function glitch(dense, size, cr, cg, cb) {
 
       fill(cr, cg, cb);
       push();
-      textFont("Monospace", 20);
+      textFont("Courier", 20);
       text("0", px, py, w, h);
       text("1", px - 10, py + 10, w, h);
       pop();
