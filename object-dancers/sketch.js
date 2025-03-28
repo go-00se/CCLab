@@ -46,8 +46,14 @@ class YourNameDancer {
     this.bodySpeed = 0.05;
     this.handLX = 0;
     this.handLY = 0;
+    this.handPx = 0;
+    this.handPy = 0;
     this.handRX = 0;
     this.handRY = 0;
+    this.handP1X = 0;
+    this.handP1Y = 0;
+    this.handP2X = 0;
+    this.handP2Y = 0;
     this.feetLX = 0;
     this.feetLY = 0;
     this.feetRX = 0;
@@ -55,8 +61,20 @@ class YourNameDancer {
     this.body = ["👕"];
     this.feetL = ["👟","👞"];
     this.feetR = ["👟","👞"];
-    this.handL = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
-    this.handR = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
+    this.handL = ["🤚", "🖖", "✌️", "🤟" ,"👆"];
+    this.handR = ["🤚", "🖖", "✌️", "🤟" ,"👆"];
+    this.light = [
+      [255,0,255,3],
+      [0,255,255,3],
+      [255,255,0,3],
+      [255,69,0,3],
+      [0,255,0,3],
+      [255,0,0,3],
+      [255,255,255,3],
+    ];
+
+    this.handScale = 0;
+  
     // add properties for your dancer here:
     //..
     //..
@@ -74,14 +92,26 @@ class YourNameDancer {
     this.bodyAngle = 30 * sin(frameCount * this.bodySpeed);
     this.bodyX = this.headX + sin(radians(this.bodyAngle));
     this.bodyY = this.headY + 55 * cos(radians(this.bodyAngle));
-    this.handLX = this.bodyX - 60;
-    this.handLY = this.bodyY + 30;
-    this.handRX = this.bodyX + 60;
-    this.handRY = this.bodyY + 30;
+    // this.handLX = this.bodyX - 60;
+    // this.handLY = this.bodyY + 30;
+    // this.handRX = this.bodyX + 60;
+    // this.handRY = this.bodyY + 30;
     this.feetLX = this.bodyX - 20;
     this.feetLY = this.bodyY + 110;
     this.feetRX = this.bodyX + 20;
     this.feetRY = this.bodyY + 110;
+    push();
+    translate(this.bodyX - 20, this.bodyY);
+    this.handP1X = 30 * cos(radians(this.bodyAngle) * 5) + 10;
+    this.handP1Y = 30 * sin(radians(this.bodyAngle) * 2) -10;
+    pop();
+    push();
+    translate(this.handP1X, this.handP1Y);
+    this.handP2X = 20 * sin(radians(this.bodyAngle)*4) - 12;
+    this.handP2Y = 12 * cos(radians(this.bodyAngle) * 5) - 20;
+    pop();
+
+    this.handScale = map(abs(this.handP2X - this.x),430, 390, 18, 25);
 
   }
   display() {
@@ -90,15 +120,18 @@ class YourNameDancer {
     // you may change its position on line 19 to see the effect.
     push();
     translate(this.x, this.y);
+    // console.log(this.handP2X-this.x)
 
     // ******** //
     // ⬇️ draw your dancer from here ⬇️
+    this.drawLight();
     this.drawBody();
     this.drawHead();
     this.drawhandL();
     this.drawhandR();
     this.drawFeetL();
     this.drawFeetR();
+    
     // ⬆️ draw your dancer above ⬆️
     // ******** //
 
@@ -108,7 +141,7 @@ class YourNameDancer {
     // it is using "this" because this function, too, 
     // is a part if your Dancer object.
     // comment it out or delete it eventually.
-    this.drawReferenceShapes()
+    // this.drawReferenceShapes()
 
     pop();
   }
@@ -126,7 +159,7 @@ class YourNameDancer {
     push();
     textAlign(CENTER, CENTER);
     rotate(radians(this.bodyAngle*0.5));
-    textSize(40);
+    textSize(30);
     if (frameCount % 60 == 0) {
       this.head = shuffle(this.head);
     }
@@ -138,7 +171,7 @@ class YourNameDancer {
     translate(this.bodyX, this.bodyY);
     rotate(radians(this.bodyAngle));
     textAlign(CENTER, CENTER);
-    textSize(70);
+    textSize(60);
     if (frameCount % 60 == 0) {
       this.body = shuffle(this.body);
     }
@@ -147,11 +180,11 @@ class YourNameDancer {
   }
   drawhandL(){
     push();
-    translate(this.handLX, this.handLY);
+    translate(this.handP2X - 20, this.handP2Y);
     textAlign(CENTER, CENTER);
-    textSize(20);
-    rotate(-frameCount / 10 + 1000);
-    if (frameCount % 60 == 0) {
+    textSize(this.handScale);
+    rotate(radians(this.bodyAngle) * 5 + 1000);
+    if (frameCount % 18 == 0) {
       this.handL = shuffle(this.handL);
     }
     text(this.handL[0], 0, 0);
@@ -159,11 +192,11 @@ class YourNameDancer {
   }
   drawhandR(){
     push();
-    translate(this.handRX, this.handRY);
+    translate(-this.handP2X + 10, 20 + this.handP2Y);
     textAlign(CENTER, CENTER);
-    textSize(20);
-    rotate(frameCount / 10);
-    if (frameCount % 60 == 0) {
+    textSize(this.handScale);
+    rotate(radians(this.bodyAngle) * -5);
+    if (frameCount % 30 == 0) {
       this.handR = shuffle(this.handR);
     }
     text(this.handR[0], 0, 0);
@@ -189,6 +222,20 @@ class YourNameDancer {
       this.feetR = shuffle(this.feetR);
     }
     text(this.feetR[0], 0, 0);  
+    pop();
+  }
+  drawLight (){
+    push();
+    noStroke();
+    
+    ellipseMode(CENTER);
+    if (frameCount % 80 == 0) {
+      this.light = shuffle(this.light);
+    }
+    fill(this.light[0]);
+    for (let i = 100; i >= 20; i -= 2){
+    ellipse(0, 0, i, i * 2);
+    }
     pop();
   }
 }
