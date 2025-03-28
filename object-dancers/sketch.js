@@ -111,7 +111,7 @@ class YourNameDancer {
     this.handP2Y = 12 * cos(radians(this.bodyAngle) * 5) - 20;
     pop();
 
-    this.handScale = map(abs(this.handP2X - this.x),430, 390, 20, 50);
+    this.handScale = map(abs(this.handP2X - this.x),430, 390, 10, 45);
 
   }
   display() {
