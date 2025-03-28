@@ -38,16 +38,18 @@ class YourNameDancer {
     this.y = startY;
     this.head = ["😆", "💀", "🙃", "🫥", "😨", "💩","👽", "😇", "😋"];
     this.headX = 0;
-    this.headY = -45;
+    this.headY = -65;
     this.bodyX = 0;
     this.bodyY = 0;
-    this.handL = 0;
-    this,handR = 0;
+    this.handLX = 0;
+    this.handLY = 0;
+    this.handRX = 0;
+    this.handRY = 0;
     this.body = ["👕", "👚"];
     this.leg = ["👖"];
     this.foot = ["👟"];
-    this.handL = ["🤚"];
-    this.handR = ["🤚"];
+    this.handL = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
+    this.handR = ["🤚", "👋", "🖖", "✌️", "🤟" ,"👆", "🖕"];
     // add properties for your dancer here:
     //..
     //..
@@ -58,8 +60,11 @@ class YourNameDancer {
     // your dancer's desired moves and behaviour
 
     this.bodyX = this.headX;
-    this.bodyY = this.headY + 45;
-    this
+    this.bodyY = this.headY + 55;
+    this.handLX = this.bodyX - 60;
+    this.handLY = this.bodyY + 30;
+    this.handRX = this.bodyX + 60;
+    this.handRY = this.bodyY + 30;
 
   }
   display() {
@@ -73,6 +78,8 @@ class YourNameDancer {
     // ⬇️ draw your dancer from here ⬇️
     this.drawBody();
     this.drawHead();
+    this.drawhandL();
+    this.drawhandR();
     
 
 
@@ -123,13 +130,26 @@ class YourNameDancer {
   }
   drawhandL(){
     push();
-    translate(this.handL, this.handL);
+    translate(this.handLX, this.handLY);
     textAlign(CENTER, BOTTOM);
-    textSize(70);
+    textSize(30);
+    rotate(-frameCount / 10 + 1000);
     if (frameCount % 60 == 0) {
       this.handL = shuffle(this.handL);
     }
     text(this.handL[0], 0, 0);
+    pop();
+  }
+  drawhandR(){
+    push();
+    translate(this.handRX, this.handRY);
+    textAlign(CENTER, BOTTOM);
+    textSize(30);
+    rotate(frameCount / 10);
+    if (frameCount % 60 == 0) {
+      this.handR = shuffle(this.handR);
+    }
+    text(this.handR[0], 0, 0);
     pop();
   }
 }
