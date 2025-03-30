@@ -126,11 +126,12 @@ class YourNameDancer {
    push();
    translate(this.x, this.y);
    this.drawLight();
+   this.drawReferenceShapes()
    pop();
   
     push();
     translate(this.x + this.goRound, this.y);
-    scale(this.scale);
+    scale(this.scale * 0.68);
     // console.log(this.handP2X-this.x)
 
     // ******** //
@@ -151,7 +152,7 @@ class YourNameDancer {
     // it is using "this" because this function, too, 
     // is a part if your Dancer object.
     // comment it out or delete it eventually.
-    // this.drawReferenceShapes()
+   
 
     pop();
   }
