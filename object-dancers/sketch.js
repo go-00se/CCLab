@@ -74,6 +74,8 @@ class YourNameDancer {
     ];
 
     this.handScale = 0;
+    this.scale = 0;
+    this.goRound = 0;
   
     // add properties for your dancer here:
     //..
@@ -113,18 +115,26 @@ class YourNameDancer {
 
     this.handScale = map(abs(this.handP2X - this.x),430, 390, 15, 20);
 
+    this.scale = map(sin(frameCount * 0.02), -1, 1, 1, 1.5);
+    this.goRound = map(sin(frameCount * 0.04), -1, 1, -30, 30);
+
   }
   display() {
     // the push and pop, along with the translate 
     // places your whole dancer object at this.x and this.y.
     // you may change its position on line 19 to see the effect.
+   push();
+   translate(this.x, this.y);
+   this.drawLight();
+   pop();
+  
     push();
-    translate(this.x, this.y);
+    translate(this.x + this.goRound, this.y);
+    scale(this.scale);
     // console.log(this.handP2X-this.x)
 
     // ******** //
     // ⬇️ draw your dancer from here ⬇️
-    this.drawLight();
     this.drawBody();
     this.drawHead();
     this.drawhandL();
