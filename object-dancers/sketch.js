@@ -126,7 +126,7 @@ class YourNameDancer {
    push();
    translate(this.x, this.y);
    this.drawLight();
-   this.drawReferenceShapes()
+  //  this.drawReferenceShapes()
    pop();
   
     push();
