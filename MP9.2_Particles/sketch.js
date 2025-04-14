@@ -1,6 +1,6 @@
 // CCLab Mini Project - 9.R Particle World Template
 
-let NUM_OF_PARTICLES = 6500; // Decide the initial number of particles.
+let NUM_OF_PARTICLES = 4000; // Decide the initial number of particles.
 let MAX_OF_PARTICLES = 500; // Decide the maximum number of particles.
 
 let particles = [];
@@ -40,7 +40,7 @@ function setup() {
   // grids' szie
   cols = floor(width / scl) + 1;
   rows = floor(height / scl) + 1;
-  // frameRate(5);
+  // frameRate(30);
 
 }
 
@@ -164,6 +164,9 @@ class Particle {
     this.pos = createVector(this.x, this.y);
     this.vel = createVector(this.velX, this.velY);
     this.acc = createVector(0, 0);
+
+    this.PrevX = this.pos.x;
+    this.PrevY = this.pos.y;
   } 
   // methods (functions): particle's behaviors
   update() {
@@ -179,17 +182,21 @@ class Particle {
     this.acc.mult(0);
      this.vel.limit(5);
 
-     
+     this.PrevX = this.pos.x;
+     this.PrevY = this.pos.y;
+
   }
   display() {
     // particle's appearance
     push();
     translate(this.pos.x, this.pos.y);
 
-    noStroke();
+    strokeWeight(1);
     colorMode(HSB);
     fill(this.vel.x * 13 + 250, this.vel.y * 18 + 20, 100);
-    circle(0,0,2)
+    stroke(this.vel.x * 13 + 250, this.vel.y * 18 + 20, 100);
+    circle(0,0,0.5)
+    line(this.PrevX, this.PrevY, this.pos.x, this.pos.y);
 
     pop();
 
