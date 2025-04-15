@@ -13,10 +13,14 @@ function draw() {
   background('white');
   textSize(400);
   text('🔊', 100, 400);
+
+
 }
 
 function mousePressed() {
   for(let i; i<=100; i++) {
   kick.play();
+
+  }
   
 }
