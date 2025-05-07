@@ -1,0 +1,28 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+  position: absolute;
+  z-index: -1; /*降低元素z轴优先值*/
+}
+
+.main-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+
+#scrollBox{
+  height: 200000px;
+  /* background-color: lightyellow; */
+}
+
+#scrollContainer{
+  outline: 2px solid red;
+  height: 500px;
+  overflow: scroll;
+}
