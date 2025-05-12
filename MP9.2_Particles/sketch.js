@@ -86,41 +86,7 @@ function draw() {
  }
 
 
-// synced wave ---->
-//   //grids
-  
-//   for (let y = 0; y < rows; y++) {
-//     xoff = 0;
-//    for (let x = 0; x < cols; x++) {
-//      angle = noise(xoff, yoff, zoff) * TWO_PI;
-//      v = p5.Vector.fromAngle(angle);
 
-     
-
-//      //draw vector
-//      stroke(0);
-//      push();
-//      translate(x * scl, y * scl);
-//      rotate(v.heading());
-//      strokeWeight(1);
-//      line(0, 0, scl, 0);
-//      pop();
-    
-   
-
-//      xoff += delta;
-
-//      yoff = 0
-
-//    }
-
-//    yoff += delta;
-
-//    //the time-demension of noise
-//    zoff += intensity;
-
-//  }
-  
   // consider generating particles in draw(), using Dynamic Array
 
   // update and display
@@ -134,11 +100,7 @@ function draw() {
     if (mouseIsPressed == true){p.Interact()};
   }
 
-  // limit the number of particles
-  // if (particles.length > MAX_OF_PARTICLES) {
-  //   particles.splice(0, 1); // remove the first (oldest) particle
-  // }
-
+ 
   for (let i = particles.length - 1; i >= 0 ; i--) {
     if(particles[i].onCan == false){
       particles.splice(i, 1);
