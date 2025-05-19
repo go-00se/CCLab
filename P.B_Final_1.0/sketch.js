@@ -64,18 +64,18 @@ function draw() {
 
   video.loadPixels();
 
-  // 绘制关键点
-  // if (hands.length > 0) {
-  //   let hand = hands[0];
-  //   for (let j = 0; j < hand.keypoints.length; j++) {
-  //     let keypoint = hand.keypoints[j];
-  //     push();
-  //     fill(0, 255, 0);
-  //     noStroke();
-  //     circle(keypoint.x, keypoint.y, 10);
-  //     pop();
-  //   }
-  // }
+
+  if (hands.length > 0) {
+    let hand = hands[0];
+    for (let j = 0; j < hand.keypoints.length; j++) {
+      let keypoint = hand.keypoints[j];
+      push();
+      fill(0, 255, 0);
+      noStroke();
+      circle(keypoint.x, keypoint.y, 10);
+      pop();
+    }
+  }
 
   pD = pinchDetection();
 
