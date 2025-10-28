@@ -511,7 +511,7 @@ class Dot {
       this.targetY = this.gridY + jitterY;
 
 
-      this.size = map(distance, 0, width / 2, 13, 0.01);
+      this.size = map(distance, 0, width / 3, 14, 0.01);
 
 
       this.noiseOffsetX += 0.05;
